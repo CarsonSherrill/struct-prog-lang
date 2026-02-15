@@ -83,6 +83,7 @@ def test_parse_term():
         "tag": "*",
     }
     assert tokens == [{"column": 6, "line": 1, "tag": None}]
+    
     tokens = tokenize("9%4")
     ast, tokens = parse_term(tokens)
     assert ast == {
@@ -90,7 +91,6 @@ def test_parse_term():
         "right": {"tag": "number", "value": 4},
         "tag": "%",
     }
-
     tokens = tokenize("10%4*3")
     ast, tokens = parse_term(tokens)
     assert ast == {

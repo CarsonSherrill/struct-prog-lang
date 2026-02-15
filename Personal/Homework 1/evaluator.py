@@ -1,5 +1,4 @@
 import parser, tokenizer
-from pprint import pprint
 
 def evaluate(ast):
     if ast["tag"] == "number":
@@ -48,9 +47,9 @@ def test_evaluate():
     tokens = tokenizer.tokenize("7 % 3")
     ast, tokens = parser.parse_expression(tokens)
     assert evaluate(ast) == 1
-    tokens = tokenizer.tokenize("11 % 3")
+    tokens = tokenizer.tokenize("2 + 11 % 3")
     ast, tokens = parser.parse_expression(tokens)
-    assert evaluate(ast) == 2
+    assert evaluate(ast) == 4
     tokens = tokenizer.tokenize("9 % 4 * 3")
     ast, tokens = parser.parse_expression(tokens)
     assert evaluate(ast) == 3
