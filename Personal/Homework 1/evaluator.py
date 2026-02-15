@@ -1,4 +1,5 @@
 import parser, tokenizer
+from pprint import pprint
 
 def evaluate(ast):
     if ast["tag"] == "number":
@@ -11,6 +12,12 @@ def evaluate(ast):
         return evaluate(ast["left"]) * evaluate(ast["right"])
     elif ast["tag"] == "/":
         return evaluate(ast["left"]) / evaluate(ast["right"])
+    elif ast["tag"] == "%":
+        left = evaluate(ast["left"])
+        right = evaluate(ast["right"])
+        if left < 0 or right < 0:
+            raise ValueError("Negative number used in modulo operation")
+        return left % right
     else:
         raise ValueError(f"Unknown AST node: {ast}")
 
@@ -37,6 +44,16 @@ def test_evaluate():
     tokens = tokenizer.tokenize("3*(4+5)")
     ast, tokens = parser.parse_expression(tokens)
     assert evaluate(ast) == 27
+
+    tokens = tokenizer.tokenize("7 % 3")
+    ast, tokens = parser.parse_expression(tokens)
+    assert evaluate(ast) == 1
+    tokens = tokenizer.tokenize("11 % 3")
+    ast, tokens = parser.parse_expression(tokens)
+    assert evaluate(ast) == 2
+    tokens = tokenizer.tokenize("9 % 4 * 3")
+    ast, tokens = parser.parse_expression(tokens)
+    assert evaluate(ast) == 3
 
 if __name__ == "__main__":
     test_evaluate()
