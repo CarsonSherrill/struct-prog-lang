@@ -17,6 +17,7 @@ patterns = [
     (r"\*", "*"),
     (r"\(", "("),
     (r"\)", ")"),
+    (r"[a-zA-Z_][a-zA-Z0-9_]*", "identifier"),
     (r".", "error"),
 ]
 
@@ -47,6 +48,8 @@ def tokenize(characters):
             token = {"tag": current_tag, "line": line, "column": column}
             if current_tag == "number":
                 token["value"] = int(value)
+            if current_tag == "identifier":
+                token["value"] = value
             tokens.append(token)
 
         # advance position and update line/column
@@ -79,6 +82,14 @@ def test_operators():
     t = tokenize("+ - * / ( )")
     tags = [tok["tag"] for tok in t]
     assert tags == ["+", "-", "*", "/", "(", ")", None]
+
+
+def test_identifiers():
+    print("test tokenize identifiers")
+    t = tokenize("foo bar baz")
+    tags = [tok["tag"] for tok in t]
+    assert tags == ["identifier", "identifier", "identifier", None]
+    assert t[0]["value"] == "foo"
 
 
 def test_expressions():
@@ -117,6 +128,7 @@ if __name__ == "__main__":
     test_digits()
     test_operators()
     test_expressions()
+    test_identifiers()
     test_whitespace()
     test_error()
     print("done.")

@@ -7,25 +7,28 @@ from pprint import pprint
 
 #   expression = term { ("+" | "-") term }
 #   term = factor { ("*" | "/") factor }
-#   factor = <number> | "(" expression ")"
+#   factor = <number> | <identifier> | "(" expression ")"
 
 
 def parse_factor(tokens):
-    """factor = <number>"""
+    #   factor = <number> | <identifier> | "(" expression ")"
     token = tokens[0]
     if token["tag"] == "number":
         node = {"tag": "number", "value": token["value"]}
+        return node, tokens[1:]
+    if token["tag"] == "identifier":
+        node = {"tag": "identifier", "value": token["value"]}
         return node, tokens[1:]
     if token["tag"] == "(":
         node, tokens = parse_expression(tokens[1:])
         if tokens[0]["tag"] != ")":
             raise SyntaxError(f"Expected ')', got {tokens[0]}")
         return node, tokens[1:]
-    raise SyntaxError(f"Expected expression, got {tokens[0]}")
+    raise SyntaxError(f"Expected factor, got {tokens[0]}")
 
 
 def test_parse_factor():
-    """factor = <number>"""
+    #   factor = <number> | <identifier> | "(" expression ")"
     print("test parse_factor()")
     tokens = tokenize("3")
     ast, tokens = parse_factor(tokens)
